@@ -13,7 +13,7 @@ import java.util.List;
 public class MenuRepositoryImpl implements MenuRepository {
 
     @Override
-    public List<Menu> getAllActiveMenus() {
+    public List<Menu> getAllAvailableMenus() {
         List<Menu> menus = new ArrayList<>();
         String query = "SELECT * FROM menu WHERE status_aktif = 1";
 
@@ -30,11 +30,9 @@ public class MenuRepositoryImpl implements MenuRepository {
                 );
                 menus.add(menu);
             }
-
         } catch (SQLException e) {
             System.out.println("Gagal mengambil data menu: " + e.getMessage());
         }
-
         return menus;
     }
 }

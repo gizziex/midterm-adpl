@@ -14,12 +14,12 @@ public class PesananRepositoryImpl implements PesananRepository {
     public boolean saveOrder(Pesanan pesanan, List<DetailPesanan> details, List<List<Topping>> toppingsPerItem) {
         String queryPesanan = "INSERT INTO pesanan (metode_pengambilan, ongkir, total_harga, status_pesanan) VALUES (?, ?, ?, ?)";
         String queryDetail = "INSERT INTO detail_pesanan (id_pesanan, id_menu, level_pedas, jumlah_porsi, subtotal) VALUES (?, ?, ?, ?, ?)";
-        String queryTopping = "INSERT INTO detail_topping (id_detail_pesanan, id_topping) VALUES (?, ?)";
+        String queryTopping = "INSERT INTO detail_topping (id_detail, id_topping, jumlah) VALUES (?, ?, ?)";
 
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
-            conn.setAutoCommit(false); 
+            conn.setAutoCommit(false);
 
             try (PreparedStatement stmtPesanan = conn.prepareStatement(queryPesanan, Statement.RETURN_GENERATED_KEYS)) {
                 stmtPesanan.setString(1, pesanan.getMetodePengambilan());
@@ -65,6 +65,7 @@ public class PesananRepositoryImpl implements PesananRepository {
                         for (Topping topping : toppings) {
                             stmtTopping.setInt(1, idDetailBaru);
                             stmtTopping.setInt(2, topping.getIdTopping());
+                            stmtTopping.setInt(3, detail.getJumlahPorsi());
                             stmtTopping.addBatch();
                         }
                         stmtTopping.executeBatch();
@@ -72,13 +73,13 @@ public class PesananRepositoryImpl implements PesananRepository {
                 }
             }
 
-            conn.commit(); 
+            conn.commit();
             return true;
 
         } catch (SQLException e) {
             if (conn != null) {
                 try {
-                    conn.rollback(); 
+                    conn.rollback();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
