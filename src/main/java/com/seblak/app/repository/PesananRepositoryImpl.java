@@ -19,9 +19,8 @@ public class PesananRepositoryImpl implements PesananRepository {
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
-            conn.setAutoCommit(false); // Mulai transaksi database secara manual
+            conn.setAutoCommit(false); 
 
-            // 1. Simpan data utama pesanan
             try (PreparedStatement stmtPesanan = conn.prepareStatement(queryPesanan, Statement.RETURN_GENERATED_KEYS)) {
                 stmtPesanan.setString(1, pesanan.getMetodePengambilan());
                 stmtPesanan.setDouble(2, pesanan.getOngkir());
@@ -29,7 +28,6 @@ public class PesananRepositoryImpl implements PesananRepository {
                 stmtPesanan.setString(4, pesanan.getStatusPesanan());
                 stmtPesanan.executeUpdate();
 
-                // Ambil ID pesanan yang baru saja di-generate oleh database
                 try (ResultSet rsKeys = stmtPesanan.getGeneratedKeys()) {
                     if (rsKeys.next()) {
                         int idPesananBaru = rsKeys.getInt(1);
@@ -40,7 +38,6 @@ public class PesananRepositoryImpl implements PesananRepository {
                 }
             }
 
-            // 2. Simpan rincian menu (detail pesanan) dan topping-nya
             for (int i = 0; i < details.size(); i++) {
                 DetailPesanan detail = details.get(i);
                 int idDetailBaru = 0;
@@ -62,7 +59,6 @@ public class PesananRepositoryImpl implements PesananRepository {
                     }
                 }
 
-                // Simpan topping untuk item menu ini jika ada
                 List<Topping> toppings = toppingsPerItem.get(i);
                 if (toppings != null && !toppings.isEmpty()) {
                     try (PreparedStatement stmtTopping = conn.prepareStatement(queryTopping)) {
@@ -76,13 +72,13 @@ public class PesananRepositoryImpl implements PesananRepository {
                 }
             }
 
-            conn.commit(); // Jika semua proses sukses, simpan permanen ke database
+            conn.commit(); 
             return true;
 
         } catch (SQLException e) {
             if (conn != null) {
                 try {
-                    conn.rollback(); // Batalkan semua perubahan jika ada error di tengah jalan
+                    conn.rollback(); 
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
