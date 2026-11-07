@@ -3,14 +3,14 @@ package com.seblak.app.model;
 public class Menu {
     private int idMenu;
     private String namaMenu;
-    private double harga;
-    private boolean statusAktif;
+    private double hargaBase;
+    private boolean tersedia;
 
-    public Menu(int idMenu, String namaMenu, double harga, boolean statusAktif) {
+    public Menu(int idMenu, String namaMenu, double hargaBase, boolean tersedia) {
         this.idMenu = idMenu;
         this.namaMenu = namaMenu;
-        this.harga = harga;
-        this.statusAktif = statusAktif;
+        this.hargaBase = hargaBase;
+        this.tersedia = tersedia;
     }
 
     public int getIdMenu() {
@@ -21,19 +21,11 @@ public class Menu {
         return namaMenu;
     }
 
-    public double getHarga() {
-        return harga;
+    public double getHargaBase() {
+        return hargaBase;
     }
 
-    public boolean isStatusAktif() {
-        return statusAktif;
+    public boolean isTersedia() {
+        return tersedia;
     }
-
-    @Override
-    public String toString() {
-        return namaMenu + " - Rp " + harga;
-    }
-}
-public class Menu {
-    
 }
