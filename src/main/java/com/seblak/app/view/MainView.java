@@ -8,6 +8,7 @@ import com.seblak.app.model.Topping;
 import com.seblak.app.repository.MenuRepositoryImpl;
 import com.seblak.app.repository.PesananRepositoryImpl;
 import com.seblak.app.repository.ToppingRepositoryImpl;
+import com.seblak.app.service.PesananService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -46,8 +47,11 @@ public class MainView extends JFrame {
         controller = new SeblakController(
             new MenuRepositoryImpl(),
             new ToppingRepositoryImpl(),
-            new PesananRepositoryImpl()
+            new PesananService(
+                new PesananRepositoryImpl()
+            )
         );
+
         initComponents();
         loadData();
     }
@@ -257,12 +261,10 @@ public class MainView extends JFrame {
     }
 
     private void hitungTotalAkhir() {
-        double subtotalSemua = 0;
-        for (DetailPesanan d : details) {
-            subtotalSemua += d.getSubtotal();
-        }
         double ongkir = radioDelivery.isSelected() ? 5000.0 : 0.0;
-        totalHarga = subtotalSemua + ongkir;
+
+        totalHarga = controller.hitungTotal(details, ongkir);
+
         lblTotal.setText("Total: " + rp(totalHarga));
     }
 
